@@ -16,8 +16,9 @@ h3{
   font-style: italic;
 }
 
-button{
+input[type='file']::file-selector-button{
   border-color : rgba(9,9,121,1);
   display: block;
+  font-weight:bold;
   margin: auto;
 }
