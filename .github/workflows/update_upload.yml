@@ -1,5 +1,5 @@
 name: Generate Section for File upload
-run-name: pushed by ${{github.actor}}
+run-name: auto-deployed by ${{github.actor}}
 on:
   push:
     paths:
@@ -8,11 +8,35 @@ on:
 jobs:
   update-index:
     runs-on: ubuntu-latest
-    
-  steps:
+    steps:
     - name: checkout
       uses: actions/checkout@v4
 
+    - name: Get added files
+      id: files
+      run: |
+        echo "FILES=$(git diff --name-only HEAD^ HEAD -- files/ | tr '\n' ' ')" >> $GITHUB_OUTPUT
+        
     - name: Update index.html
-      run: // truc à compléter
+      run: |
+          for file in ${{steps.files.outputs.FILES}}
+          do
+            filename=$(basename "$file")
+            block="<div class='rounded'><a href=\"$file\">$filename</a></div>"
+
+            if [["$filename"==1-*]]; then
+              sed -i "/<h3 id='newc'>/i $block" index.html
+            fi
+            if [["$filename"==2-*]]; then
+              sed -i "/<\/body>/i $block" index.html
+            fi
+          done
+
+    - name: Commit changes
+      run: |
+          git config user.name "github-actions"
+          git config user.email "github-actions@github.com"
+          git add index.html
+          git commit -m "Deploy new section(s) for new uploaded file(s)" || echo "No changes"
+          git push
   
