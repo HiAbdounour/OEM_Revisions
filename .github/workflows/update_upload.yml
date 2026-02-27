@@ -23,6 +23,8 @@ jobs:
         
     - name: Update index.html
       run: |
+          IFS=$'\n'
+          
           for file in ${{steps.files.outputs.FILES}}
           do
             filename=$(basename "$file")
@@ -35,6 +37,8 @@ jobs:
               sed -i "/<\/body>/i $block" index.html
             fi
           done
+
+          unset IFS
 
     - name: Commit changes
       run: |
