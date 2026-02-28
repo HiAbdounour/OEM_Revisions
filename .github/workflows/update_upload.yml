@@ -19,7 +19,7 @@ jobs:
     - name: Get added files
       id: files
       run: |
-          FILES=$(git diff --name-only HEAD^ HEAD -- files/)
+          FILES=$(git diff --name-only ${{ github.event.before }} ${{ github.event.after }} -- files/)
           echo "FILES<<EOF" >> $GITHUB_OUTPUT
           echo "$FILES" >> $GITHUB_OUTPUT
           echo "EOF" >> $GITHUB_OUTPUT
